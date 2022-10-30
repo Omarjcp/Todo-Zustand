@@ -1,11 +1,11 @@
 import create from "zustand";
 import { persist } from "zustand/middleware";
-import { Todo } from "../types/todos";
+import { StatusTodo, Todo } from "../types/todos";
 
 interface TodoStore {
   todos: Todo[];
   addTodo: (todo: Todo) => void;
-  //   todoDone: (id: string) => void;
+  changeStatus: (id: string, valueToUpdate: StatusTodo) => void;
   todoRemove: (id: string) => void;
 }
 
@@ -14,7 +14,15 @@ const useStore = create<TodoStore>()(
     (set) => ({
       todos: [],
       addTodo: (todo) => set((state) => ({ todos: state.todos.concat(todo) })),
-      //   todoDone: (todo) => set((state) => ({})),
+      changeStatus: (id, valueToUpdate) =>
+        set((state) => ({
+          todos: state?.todos?.map((todoToUpdate) => {
+            if (todoToUpdate?.id === id) {
+              return { ...todoToUpdate, status: StatusTodo[valueToUpdate] };
+            }
+            return todoToUpdate;
+          }),
+        })),
       todoRemove: (id) =>
         set((state) => ({
           todos: state.todos.filter((todo) => todo?.id !== id),

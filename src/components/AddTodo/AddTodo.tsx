@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Text, TextInput, Button, Box, Textarea } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { useInputState, randomId } from "@mantine/hooks";
 import { StatusTodo, Todo } from "../../types/todos";
 import { useStyles } from "./style";
@@ -22,6 +23,13 @@ const AddTodo = () => {
   const crearState = () => setTodo({ ...todo, title: "", description: "" });
 
   const onAddTodo = () => {
+    if (!todo.title.length) {
+      return showNotification({
+        title: "Field empty",
+        message: "Sorry, title is required! 🤥",
+        color: "red",
+      });
+    }
     setHash(randomId());
     addTodo({ ...todo, id: hash });
     crearState();
